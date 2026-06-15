@@ -3,6 +3,7 @@
 **The Temporal Mirror** — a personalized climate lifestyle studio that maps your daily habits to their carbon shadow, simulates alternate 2050 futures, and surfaces actionable micro-missions.
 
 ---
+<img width="1877" height="1027" alt="image" src="https://github.com/user-attachments/assets/665d032f-9e47-46e7-a0b4-17a5d4db98e3" />
 
 ## Table of Contents
 
@@ -87,6 +88,8 @@ npm start
 ---
 
 ## Project Structure
+<img width="1367" height="936" alt="image" src="https://github.com/user-attachments/assets/69909f61-b539-445d-a651-3506e30d4693" />
+
 
 ```
 EchoEarth/
@@ -130,6 +133,8 @@ Action Ecosystem (commit micro-missions)
 Community Grid
 ```
 
+<img width="1876" height="1022" alt="image" src="https://github.com/user-attachments/assets/9fedc555-055a-47b4-8e77-d4dae352d2f8" />
+
 **Gating rules**
 
 - Scratch pad is disabled until all three habit phases are complete.
@@ -148,6 +153,7 @@ Community Grid
 | `npm run lint` | Run ESLint |
 
 ---
+<img width="1402" height="960" alt="image" src="https://github.com/user-attachments/assets/cf243446-ff0f-47af-89b0-64b1d2f58d26" />
 
 ## Configuration
 
@@ -166,6 +172,7 @@ turbopack: {
 No environment variables are required for local development. Create a `.env.local` file only if you add external API integrations later.
 
 ---
+<img width="1402" height="960" alt="image" src="https://github.com/user-attachments/assets/2c0a49ac-4c0c-4223-8419-77628db42b47" />
 
 ## Contributing
 
