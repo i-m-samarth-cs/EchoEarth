@@ -8,6 +8,10 @@ export function PendoInitializer() {
       visitor: {
         id: '',
       },
+      sessionReplay: {
+        masterStoreSampleRate: 100,
+        sampleRate: 100,
+      },
     });
   }, []);
 
