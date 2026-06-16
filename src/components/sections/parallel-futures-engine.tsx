@@ -121,7 +121,18 @@ export function ParallelFuturesEngine({ choices }: { choices: Record<string, str
 
                  <div className="self-end mt-auto z-10 relative">
                     <button 
-                      onClick={() => setIsCommitted(true)}
+                      onClick={() => {
+                        setIsCommitted(true);
+                        if (typeof window !== "undefined" && window.pendo) {
+                          window.pendo.track("future_path_committed", {
+                            selected_path: current.path,
+                            path_title: current.title,
+                            temperature_delta: current.temperatureDelta,
+                            air_quality: current.airQuality,
+                            path_index: activeFuture,
+                          });
+                        }
+                      }}
                       className="flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors"
                     >
                        Commit to Path <ArrowRight size={18} />
