@@ -40,6 +40,9 @@ const MISSIONS: Mission[] = [
   },
 ];
 
+// Module-level dedup: ensure all_missions_completed fires only once per session
+let allMissionsTracked = false;
+
 export function ActionEcosystem({ enabled }: { enabled: boolean }) {
   const [committed, setCommitted] = useState<Set<string>>(new Set());
   const [lastCommitted, setLastCommitted] = useState<Mission | null>(null);
@@ -48,8 +51,31 @@ export function ActionEcosystem({ enabled }: { enabled: boolean }) {
 
   const handleCommit = (mission: Mission) => {
     if (!enabled || committed.has(mission.id)) return;
-    setCommitted((prev) => new Set([...prev, mission.id]));
+    const newCommitted = new Set([...committed, mission.id]);
+    setCommitted(newCommitted);
     setLastCommitted(mission);
+
+    const newTotalSaved = MISSIONS.filter((m) => newCommitted.has(m.id)).reduce((sum, m) => sum + m.carbon, 0);
+
+    if (typeof window !== "undefined" && window.pendo) {
+      window.pendo.track("mission_committed", {
+        mission_id: mission.id,
+        mission_title: mission.title,
+        carbon_savings_kg: mission.carbon,
+        carbon_label: mission.carbonLabel,
+        total_missions_active: newCommitted.size,
+        total_monthly_savings_kg: newTotalSaved,
+      });
+
+      if (newCommitted.size === MISSIONS.length && !allMissionsTracked) {
+        allMissionsTracked = true;
+        window.pendo.track("all_missions_completed", {
+          total_monthly_savings_kg: newTotalSaved,
+          mission_count: MISSIONS.length,
+          missions_committed: MISSIONS.map((m) => m.id).join(","),
+        });
+      }
+    }
   };
 
   if (!enabled) {

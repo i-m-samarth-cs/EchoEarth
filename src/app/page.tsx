@@ -8,6 +8,7 @@ import { ParallelFuturesEngine } from "@/components/sections/parallel-futures-en
 import { ActionEcosystem } from "@/components/sections/action-ecosystem";
 import { CommunityGrid } from "@/components/sections/community-grid";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { calculateImpact } from "@/lib/behavioral-engine";
 
 function isChoicesComplete(choices: Record<string, string> | null): choices is Record<string, string> {
   return Boolean(choices?.commute && choices?.diet && choices?.energy);
@@ -20,6 +21,22 @@ export default function Home() {
 
   const handleCompleteBuilder = (finalChoices: Record<string, string>) => {
     setChoices(finalChoices);
+
+    const impact = calculateImpact(finalChoices);
+    if (typeof window !== "undefined" && window.pendo) {
+      window.pendo.track("day_builder_completed", {
+        commute_choice: finalChoices.commute,
+        diet_choice: finalChoices.diet,
+        energy_choice: finalChoices.energy,
+        commute_score: impact.commuteScore,
+        diet_score: impact.dietScore,
+        energy_score: impact.energyScore,
+        total_score: impact.totalScore,
+        sustainability_pct: Math.round(((37 - impact.totalScore) / 37) * 100),
+        phase_title: impact.phaseTitle,
+      });
+    }
+
     setTimeout(() => {
       document.getElementById("shadow-reveal")?.scrollIntoView({ behavior: "smooth" });
     }, 100);

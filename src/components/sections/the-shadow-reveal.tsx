@@ -5,6 +5,9 @@ import InkReveal from "@/components/ui/ink-reveal";
 import { calculateImpact } from "@/lib/behavioral-engine";
 import { Lock } from "lucide-react";
 
+// Module-level dedup: ensure scratch-start event fires only once per session
+let scratchStartTracked = false;
+
 export function TheShadowReveal({
   choices,
   enabled,
@@ -113,6 +116,20 @@ export function TheShadowReveal({
           lifetime={9999999}
           imageUrl={surfaceImage}
           disabled={!enabled}
+          onScratchStart={() => {
+            if (!scratchStartTracked && typeof window !== "undefined" && window.pendo) {
+              scratchStartTracked = true;
+              window.pendo.track("carbon_shadow_scratch_started", {
+                total_impact_score: impact.totalScore,
+                water_depletion: impact.waterDepletion,
+                deforestation: impact.deforestation,
+                carbon_emitted: impact.carbonEmitted,
+                commute_choice: choices.commute ?? "",
+                diet_choice: choices.diet ?? "",
+                energy_choice: choices.energy ?? "",
+              });
+            }
+          }}
         />
 
         {!enabled && (

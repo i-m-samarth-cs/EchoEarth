@@ -18,6 +18,8 @@ export interface InkRevealProps {
   className?: string;
   style?: React.CSSProperties;
   disabled?: boolean;
+  /** Callback fired once on the first mouse down or touch start */
+  onScratchStart?: () => void;
   /** Dummy props to ignore for backwards compatibility */
   lifetime?: number;
   wobble?: number[];
@@ -33,9 +35,11 @@ export default function InkReveal({
   className,
   style,
   disabled = false,
+  onScratchStart,
 }: InkRevealProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawingRef = useRef(false);
+  const hasFiredStartRef = useRef(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   const drawBase = useCallback(() => {
@@ -145,6 +149,10 @@ export default function InkReveal({
       }}
       onMouseDown={(e) => {
         if (disabled) return;
+        if (!hasFiredStartRef.current && onScratchStart) {
+          hasFiredStartRef.current = true;
+          onScratchStart();
+        }
         isDrawingRef.current = true;
         scratch(e.clientX, e.clientY);
       }}
@@ -153,6 +161,10 @@ export default function InkReveal({
       }}
       onTouchStart={(e) => {
         if (disabled) return;
+        if (!hasFiredStartRef.current && onScratchStart) {
+          hasFiredStartRef.current = true;
+          onScratchStart();
+        }
         isDrawingRef.current = true;
         const touch = e.touches[0];
         scratch(touch.clientX, touch.clientY);

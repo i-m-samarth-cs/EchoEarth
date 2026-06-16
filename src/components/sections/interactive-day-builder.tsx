@@ -36,6 +36,21 @@ export function InteractiveDayBuilder({ onComplete }: { onComplete: (choices: Re
   const handleSelect = (id: string) => {
     setChoices((prev) => ({ ...prev, [currentCategory]: id }));
     setMode("review");
+
+    const options = (dayBuilderOptions as Record<string, { id: string; title: string; icon: string; baselineImpact: number }[]>)[currentCategory];
+    const option = options?.find((o) => o.id === id);
+    const detail = getPhaseDetail(currentCategory, id);
+
+    if (typeof window !== "undefined" && window.pendo) {
+      window.pendo.track("day_builder_habit_selected", {
+        step_number: step + 1,
+        category: currentCategory,
+        selected_option_id: id,
+        selected_option_title: option?.title ?? id,
+        impact_level: detail.impact,
+        impact_score: option?.baselineImpact ?? 0,
+      });
+    }
   };
 
   const handleContinue = () => {
